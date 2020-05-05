@@ -17,6 +17,10 @@ class HashTable:
     Implement this.
     """
 
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.storage = [None] * capacity
+
     def fnv1(self, key):
         """
         FNV-1 64-bit hash function
@@ -30,13 +34,24 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
+        # hash_num = 0
+        # for i in range(0, len(key)):
+        #     hash_num += (ord(key[i]) * (i + 1))
+        # print("hash: ", hash_num)
+        # return hash_num & 0xFFFFFFFF
+
+        hash = 5381
+        for char in key:
+            hash = ((hash * 33) + hash) + ord(char)
+        return hash & 0xFFFFFFFF
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
+        print("index: ", self.djb2(key) % self.capacity)
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -47,6 +62,8 @@ class HashTable:
 
         Implement this.
         """
+        self.storage[self.hash_index(key)] = HashTableEntry(key, value)
+        return value
 
     def delete(self, key):
         """
@@ -56,6 +73,7 @@ class HashTable:
 
         Implement this.
         """
+        self.storage[self.hash_index(key)] = None
 
     def get(self, key):
         """
@@ -65,6 +83,8 @@ class HashTable:
 
         Implement this.
         """
+        if self.storage[self.hash_index(key)] != None:
+            return self.storage[self.hash_index(key)].value
 
     def resize(self):
         """
@@ -73,9 +93,13 @@ class HashTable:
 
         Implement this.
         """
+        oldStuf = self.storage
+        self.capacity *= 2
+        self.storage = [None] * self.capacity
+
 
 if __name__ == "__main__":
-    ht = HashTable(2)
+    ht = HashTable(5)
 
     ht.put("line_1", "Tiny hash table")
     ht.put("line_2", "Filled beyond capacity")
