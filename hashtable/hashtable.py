@@ -62,8 +62,19 @@ class HashTable:
 
         Implement this.
         """
-        self.storage[self.hash_index(key)] = HashTableEntry(key, value)
-        return value
+        if self.storage[self.hash_index(key)] == None:
+            self.storage[self.hash_index(key)] = HashTableEntry(key, value)
+        else:
+            current = self.storage[self.hash_index(key)]
+            while current.next != None:
+                if current.key == key:
+                    current.value = value
+                    break
+                current = current.next
+            if current.key == key:
+                current.value = value
+            else:
+                current.next = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -73,7 +84,16 @@ class HashTable:
 
         Implement this.
         """
-        self.storage[self.hash_index(key)] = None
+        if self.storage[self.hash_index(key)].key == key:
+            self.storage[self.hash_index(key)] = None
+        else:
+            current = self.storage[self.hash_index(key)]
+            while current.next.key != key:
+                if current.next == None:
+                    break
+                else:
+                    current = current.next
+            current.next = current.next.next
 
     def get(self, key):
         """
@@ -84,7 +104,15 @@ class HashTable:
         Implement this.
         """
         if self.storage[self.hash_index(key)] != None:
-            return self.storage[self.hash_index(key)].value
+            if self.storage[self.hash_index(key)].key == key:
+                return self.storage[self.hash_index(key)].value
+            else:
+                current = self.storage[self.hash_index(key)]
+                while current.key != key:
+                    if current.next == None:
+                        return None
+                    current = current.next
+                return current.value
 
     def resize(self):
         """
@@ -93,9 +121,15 @@ class HashTable:
 
         Implement this.
         """
-        oldStuf = self.storage
+        oldStuff = self.storage
         self.capacity *= 2
         self.storage = [None] * self.capacity
+        for i in oldStuff:
+            if i != None:
+                current = i
+                while current != None:
+                    self.put(current.key, current.value)
+                    current = current.next
 
 
 if __name__ == "__main__":
