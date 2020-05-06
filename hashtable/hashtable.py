@@ -20,6 +20,8 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.storage = [None] * capacity
+        self.num_elements = 0
+        self.load_factor = 0
 
     def fnv1(self, key):
         """
@@ -51,7 +53,7 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         # return self.fnv1(key) % self.capacity
-        print("index: ", self.djb2(key) % self.capacity)
+        # print("index: ", self.djb2(key) % self.capacity)
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -62,8 +64,11 @@ class HashTable:
 
         Implement this.
         """
+        if self.load_factor >= 0.7:
+            self.resize()
         if self.storage[self.hash_index(key)] == None:
             self.storage[self.hash_index(key)] = HashTableEntry(key, value)
+            self.num_elements += 1
         else:
             current = self.storage[self.hash_index(key)]
             while current.next != None:
@@ -75,6 +80,8 @@ class HashTable:
                 current.value = value
             else:
                 current.next = HashTableEntry(key, value)
+                self.num_elements += 1
+        self.load_factor = self.num_elements / self.capacity
 
     def delete(self, key):
         """
@@ -121,8 +128,11 @@ class HashTable:
 
         Implement this.
         """
+        self.load_factor = 0
+        self.num_elements = 0
         oldStuff = self.storage
         self.capacity *= 2
+        # self.load_factor = self.num_elements / self.capacity
         self.storage = [None] * self.capacity
         for i in oldStuff:
             if i != None:
@@ -134,28 +144,31 @@ class HashTable:
 
 if __name__ == "__main__":
     ht = HashTable(5)
+    print("load factor: ", ht.load_factor)
 
     ht.put("line_1", "Tiny hash table")
     ht.put("line_2", "Filled beyond capacity")
     ht.put("line_3", "Linked list saves the day!")
-
-    print("")
+    ht.put("line_4", "Resize!")
+    print("load factor: ", ht.load_factor)
 
     # Test storing beyond capacity
-    print(ht.get("line_1"))
-    print(ht.get("line_2"))
-    print(ht.get("line_3"))
+    # print(ht.get("line_1"))
+    # print(ht.get("line_2"))
+    # print(ht.get("line_3"))
 
     # Test resizing
     old_capacity = len(ht.storage)
-    ht.resize()
+    # ht.resize()
+    ht.put("line_5", "Resize!")
+    print("load factor: ", ht.load_factor)
     new_capacity = len(ht.storage)
 
     print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
-    print(ht.get("line_1"))
-    print(ht.get("line_2"))
-    print(ht.get("line_3"))
+    # print(ht.get("line_1"))
+    # print(ht.get("line_2"))
+    # print(ht.get("line_3"))
 
     print("")
