@@ -1,5 +1,18 @@
 def no_dups(s):
-    # Implement me.
+    cache = {}
+    unique_string = ""
+    arr = s.split(" ")
+    for word in arr:
+        if word in cache:
+            continue
+        else:
+            if unique_string and word != "":
+                cache[word] = 1
+                unique_string = unique_string + " " + word
+            elif word != "":
+                cache[word] = 1
+                unique_string = word
+    return unique_string
 
 
 if __name__ == "__main__":
