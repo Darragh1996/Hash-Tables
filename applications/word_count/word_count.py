@@ -4,7 +4,7 @@ import re
 def word_count(s):
     count = {}
     # s = s.translate({ord(c): None for c in ':,.- += /\\|[](}{)*^'})
-    s = re.sub(r'[^a-zA-Z\' ]', '', s)
+    s = re.sub(r'[^a-zA-Z\']', ' ', s)
     s = s.strip().lower()
     word_arr = s.split(" ")
     if len(word_arr) == 1 and word_arr[0] == "":

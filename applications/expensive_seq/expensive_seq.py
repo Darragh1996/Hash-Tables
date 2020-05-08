@@ -2,7 +2,7 @@ cache = {}
 
 
 def exps(x, y, z):
-    search_string = f"num_{x}"
+    search_string = f"num_{x}num_{y}num_{z}"
     if search_string in cache:
         return cache[search_string]
     if x <= 0:
